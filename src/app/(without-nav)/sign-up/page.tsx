@@ -3,7 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import prisma from "@/lib/prisma";
+import prisma from "../../../lib/prisma";
 import bcrypt from "bcrypt";
 
 export default function SignUpPage() {
