@@ -25,7 +25,7 @@ export default function RecipesPage() {
   useEffect(() => {
     async function fetchRecipes() {
       try {
-        const res = await fetch("https://dummyjson.com/recipes", {
+        const res = await fetch("https://free-food-menus-api-two.vercel.app/all", {
           next: { revalidate: 3600 },
         });
         if (!res.ok) throw new Error("Failed to fetch recipes");

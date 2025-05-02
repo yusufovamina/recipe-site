@@ -1,6 +1,9 @@
 export interface Recipe {
     id: number;
     name: string;
+      dsc: string;
+      price: number;
+  
     ingredients: string[];
     instructions: string[];
     prepTimeMinutes: number;

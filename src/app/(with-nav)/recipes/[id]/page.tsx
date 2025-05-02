@@ -4,7 +4,7 @@ import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 
 async function getRecipe(id: string) {
-  const res = await fetch(`https://dummyjson.com/recipes/${id}`);
+  const res = await fetch(`https://free-food-menus-api-two.vercel.app/all/${id}`);
   const data = await res.json();
   return data as Recipe;
 }

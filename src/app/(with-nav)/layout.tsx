@@ -14,104 +14,76 @@ import { Recipe } from "../../../types";
   
   export default function WithNavLayout({ children }: { children: React.ReactNode }) {
     const [searchQuery, setSearchQuery] = useState("");
-  const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const router = useRouter();
-
-  // Загружаем рецепты при монтировании компонента
-  useEffect(() => {
-    async function fetchRecipes() {
-      try {
-        const res = await fetch("https://dummyjson.com/recipes", {
-          next: { revalidate: 3600 },
-        });
-        if (!res.ok) throw new Error("Failed to fetch recipes");
-        const data = await res.json();
-        setRecipes(data.recipes);
-      } catch (error) {
-        console.error("Error fetching recipes:", error);
+    const [recipes, setRecipes] = useState<any[]>([]);
+    const [suggestions, setSuggestions] = useState<string[]>([]);
+    const router = useRouter();
+  
+    useEffect(() => {
+      async function fetchRecipes() {
+        try {
+          const res = await fetch("https://free-food-menus-api-two.vercel.app/all", { next: { revalidate: 3600 } });
+          if (!res.ok) throw new Error("Failed to fetch recipes");
+          const data = await res.json();
+          const allRecipes = Object.values(data).flat();
+          setRecipes(allRecipes);
+        } catch (error) {
+          console.error("Error fetching recipes:", error);
+        }
       }
-    }
-    fetchRecipes();
-  }, []);
-
-  // Обработка изменения ввода
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value;
-    setSearchQuery(value);
-
-    // Фильтрация подсказок
-    if (value.trim()) {
-      const filteredSuggestions = recipes
-        .filter(recipe => recipe.name.toLowerCase().includes(value.toLowerCase()))
-        .map(recipe => recipe.name)
-        .slice(0, 5); // Ограничиваем количество подсказок до 5
-      setSuggestions(filteredSuggestions);
-    } else {
+      fetchRecipes();
+    }, []);
+  
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+      const value = e.target.value;
+      setSearchQuery(value);
+  
+      if (value.trim()) {
+        const filteredSuggestions = recipes
+          .filter(recipe => recipe.name.toLowerCase().includes(value.toLowerCase()))
+          .map(recipe => recipe.name)
+          .slice(0, 5);
+        setSuggestions(filteredSuggestions);
+      } else {
+        setSuggestions([]);
+      }
+    };
+  
+    const handleSearch = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (searchQuery.trim()) {
+        router.push(`/menu?search=${encodeURIComponent(searchQuery.trim())}`);
+        setSearchQuery("");
+        setSuggestions([]);
+      }
+    };
+  
+    const handleSuggestionClick = (suggestion: string) => {
+      setSearchQuery(suggestion);
+      router.push(`/menu?search=${encodeURIComponent(suggestion)}`);
+      setSearchQuery("");
       setSuggestions([]);
-    }
-  };
-
-  // Обработка отправки формы
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (searchQuery.trim()) {
-      router.push(`/recipes?search=${encodeURIComponent(searchQuery.trim())}`);
-      setSuggestions([]); 
-      setSearchQuery(""); 
-    }
-  };
-
-  // Обработка выбора подсказки
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchQuery(suggestion);
-    router.push(`/recipes?search=${encodeURIComponent(suggestion)}`);
-    setSuggestions([]);
-    setSearchQuery(""); 
-  };
+    };
+  
     return (
       <div className="min-h-screen flex flex-col">
         <header className="border-b">
-          <div className="container mx-auto p-4 flex justify-between items-center">
-            <h1 className="text-2xl font-bold">Recipe App</h1>
-            <NavigationMenu>
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <Link href="/home" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Home
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link href="/recipes" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Recipes
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Link href="/favorites" legacyBehavior passHref>
-                    <NavigationMenuLink className={navigationMenuTriggerStyle()}>
-                      Favorites
-                    </NavigationMenuLink>
-                  </Link>
-                </NavigationMenuItem>
-            
-              </NavigationMenuList>
-            </NavigationMenu>
-
-            {/* Поиск */}
+        <nav className="bg-white dark:bg-gray-800 shadow-lg">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between h-16 items-center">
+          <div className="flex-shrink-0">
+            <Link href="/home">
+              <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">Restaurant Name</span>
+            </Link>
+          </div>
           <div className="flex-1 max-w-md mx-4">
             <form onSubmit={handleSearch} className="relative">
               <input
                 type="text"
                 value={searchQuery}
                 onChange={handleInputChange}
-                placeholder="Search recipes (e.g., pizza)"
+                placeholder="Search menu items..."
                 className="w-full p-2 pl-10 rounded-lg bg-gray-50 dark:bg-gray-700 dark:text-gray-200 dark:placeholder-gray-400 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-orange-500 dark:focus:ring-orange-400 text-gray-800"
               />
-              {/* Иконка поиска */}
               <svg
                 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400"
                 fill="none"
@@ -126,7 +98,6 @@ import { Recipe } from "../../../types";
                   d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                 />
               </svg>
-              {/* Подсказки */}
               {suggestions.length > 0 && (
                 <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-gray-800 rounded-lg shadow-lg max-h-60 overflow-auto">
                   {suggestions.map((suggestion, index) => (
@@ -142,16 +113,23 @@ import { Recipe } from "../../../types";
               )}
             </form>
           </div>
-
-            <div className="space-x-2">
-              <Button variant="outline" asChild>
-                <Link href="/sign-in">Login</Link>
-              </Button>
-              <Button asChild>
-                <Link href="/sign-up">Register</Link>
-              </Button>
-            </div>
+          <div className="flex space-x-4">
+            <Link href="/menu" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
+              Menu
+            </Link>
+            <Link href="/order" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
+              Order
+            </Link>
+            <Link href="/location" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
+              Location
+            </Link>
+            <Link href="/contact" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
+              Contact
+            </Link>
           </div>
+        </div>
+      </div>
+    </nav>
         </header>
         <main className="flex-grow">{children}</main>
         <footer className="border-t p-4 text-center text-gray-500">
