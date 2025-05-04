@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function MenuPage() {
   const searchParams = useSearchParams();
@@ -118,34 +119,42 @@ export default function MenuPage() {
                 <h2 className="text-2xl font-bold text-gray-800 dark:text-gray-100 mb-4">{category}</h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {categoryRecipes.map((recipe) => (
-                    <div key={recipe.id} className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4">
-                      <img
-                        src={recipe.image}
-                        alt={recipe.name}
-                        className="w-full h-48 object-cover rounded-t-lg"
-                      />
-                      <div className="p-4">
-                        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">{recipe.name}</h3>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2">{recipe.description}</p>
-                        <p className="text-orange-500 font-bold mt-2">${recipe.price.toFixed(2)}</p>
-                        <div className="mt-4 flex space-x-2">
-                          <button
-                            onClick={() => addToCart(recipe)}
-                            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
-                          >
-                            Add to Cart
-                          </button>
-                          {cart.find(item => item.id === recipe.id) && (
+                    <Link href={`/recipes/${recipe.id}`} key={recipe.id}>
+                      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-4 hover:shadow-xl transition-shadow duration-300 cursor-pointer">
+                        <img
+                          src={recipe.image}
+                          alt={recipe.name}
+                          className="w-full h-48 object-cover rounded-t-lg"
+                        />
+                        <div className="p-4">
+                          <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">{recipe.name}</h3>
+                          <p className="text-gray-600 dark:text-gray-400 mt-2">{recipe.description}</p>
+                          <p className="text-orange-500 font-bold mt-2">${recipe.price.toFixed(2)}</p>
+                          <div className="mt-4 flex space-x-2">
                             <button
-                              onClick={() => removeFromCart(recipe.id)}
-                              className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                addToCart(recipe);
+                              }}
+                              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600"
                             >
-                              Remove
+                              Add to Cart
                             </button>
-                          )}
+                            {cart.find(item => item.id === recipe.id) && (
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  removeFromCart(recipe.id);
+                                }}
+                                className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600"
+                              >
+                                Remove
+                              </button>
+                            )}
+                          </div>
                         </div>
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>
