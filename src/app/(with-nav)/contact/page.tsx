@@ -24,7 +24,7 @@ export default function ContactPage() {
           Phone: +1-123-456-7890
         </p>
         <p className="text-gray-700 dark:text-gray-300 mb-4">
-          Email: info@restaurant.com
+          Email: info@flavorfusion.com
         </p>
         <form onSubmit={handleSubmit} className="mt-6">
           <div className="mb-4">

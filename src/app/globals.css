@@ -158,3 +158,20 @@
 .animation-delay-700 { animation-delay: 700ms; }
 .animation-delay-800 { animation-delay: 800ms; }
 .animation-delay-900 { animation-delay: 900ms; }
+
+@keyframes slide {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.carousel-container {
+  animation: slide 10s linear infinite; /* Скорость анимации: 15 секунд */
+}
+
+.carousel-container:hover {
+  animation-play-state: paused; /* Остановка анимации при наведении */
+}

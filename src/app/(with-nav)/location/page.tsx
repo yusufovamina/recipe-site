@@ -48,7 +48,7 @@ export default function LocationPage() {
           <h2 className="text-2xl font-semibold text-gray-800 dark:text-gray-100 mb-4">Contact Us</h2>
           <p className="text-gray-600 dark:text-gray-400">Address: 123 Taste Street, Food City, FC 12345</p>
           <p className="text-gray-600 dark:text-gray-400">Phone: (555) 123-4567</p>
-          <p className="text-gray-600 dark:text-gray-400">Email: info@restaurant.com</p>
+          <p className="text-gray-600 dark:text-gray-400">Email: info@flavorfusion.com</p>
         </div>
         <div className="h-96 w-full rounded-lg overflow-hidden shadow-lg">
           <div id="map" className="w-full h-full" />

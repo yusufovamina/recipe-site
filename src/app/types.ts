@@ -14,7 +14,7 @@ export interface Recipe {
     caloriesPerServing: number;
     tags: string[];
     userId: number;
-    image: string;
+    img: string;
     rating: number;
     reviewCount: number;
     mealType: string[];
