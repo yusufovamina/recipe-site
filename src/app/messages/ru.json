@@ -1,0 +1,22 @@
+{
+    "SignInPage": {
+      "title": "Вход",
+      "emailLabel": "Электронная почта",
+      "emailPlaceholder": "Введите ваш email",
+      "passwordLabel": "Пароль",
+      "passwordPlaceholder": "Введите ваш пароль",
+      "loginButton": "Войти",
+      "loginWithGoogle": "Войти через Google",
+      "registerPrompt": "Нет аккаунта?",
+      "registerLink": "Зарегистрироваться",
+      "invalidCredentials": "Неверный email или пароль",
+      "unexpectedError": "Произошла неожиданная ошибка. Попробуйте снова.",
+      "googleSignInError": "Не удалось войти через Google. Попробуйте снова.",
+      "loggingIn": "Вход в систему..."
+    },
+    "LocaleSwitcher": {
+      "en": "English",
+      "ru": "Русский",
+      "az": "Azərbaycan"
+    }
+  }

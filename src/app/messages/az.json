@@ -1,0 +1,22 @@
+{
+    "SignInPage": {
+      "title": "Daxil ol",
+      "emailLabel": "E-poçt",
+      "emailPlaceholder": "E-poçtunuzu daxil edin",
+      "passwordLabel": "Şifrə",
+      "passwordPlaceholder": "Şifrənizi daxil edin",
+      "loginButton": "Daxil ol",
+      "loginWithGoogle": "Google ilə daxil ol",
+      "registerPrompt": "Hesabınız yoxdur?",
+      "registerLink": "Qeydiyyatdan keç",
+      "invalidCredentials": "E-poçt və ya şifrə yanlışdır",
+      "unexpectedError": "Gözlənilməz xəta baş verdi. Yenidən cəhd edin.",
+      "googleSignInError": "Google ilə daxil olmaq alınmadı. Yenidən cəhd edin.",
+      "loggingIn": "Daxil olunur..."
+    },
+    "LocaleSwitcher": {
+      "en": "English",
+      "ru": "Русский",
+      "az": "Azərbaycan"
+    }
+  }

@@ -1,0 +1,22 @@
+{
+    "SignInPage": {
+      "title": "Login",
+      "emailLabel": "Email",
+      "emailPlaceholder": "Enter your email",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "loginButton": "Login",
+      "loginWithGoogle": "Login with Google",
+      "registerPrompt": "Don’t have an account?",
+      "registerLink": "Register",
+      "invalidCredentials": "Invalid email or password",
+      "unexpectedError": "An unexpected error occurred. Please try again.",
+      "googleSignInError": "Failed to sign in with Google. Please try again.",
+      "loggingIn": "Logging in..."
+    },
+    "LocaleSwitcher": {
+      "en": "English",
+      "ru": "Русский",
+      "az": "Azərbaycan"
+    }
+  }
