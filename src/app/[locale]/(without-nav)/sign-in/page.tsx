@@ -6,12 +6,14 @@ import { Label } from "@/components/ui/label";
 import { useTranslations } from "next-intl";
 import { signIn } from "next-auth/react";
 import { FormEvent, useState } from "react";
-import { Link, useRouter } from "../../../i18n/navigation";
-import LocaleSwitcher from "../../../../components/LocaleSwitcher";
+import { Link, useRouter, usePathname } from "../../../i18n/navigation";
+import { useLocale } from "next-intl";
+import LanguageSwitcher from "@/app/components/LanguageSwitcher";
 
 export default function SignInPage() {
   const t = useTranslations("SignInPage");
   const router = useRouter();
+  const locale = useLocale();
   const [error, setError] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
@@ -29,20 +31,25 @@ export default function SignInPage() {
         redirect: false,
         email,
         password,
+        callbackUrl: `/${locale}/home`,
       });
 
-      if (result?.error) {
+      if (!result) {
+        throw new Error("Sign in failed");
+      }
+
+      if (result.error) {
         console.error("Sign-in error:", result.error);
         setError(
           result.error === "CredentialsSignin"
             ? t("invalidCredentials")
             : t("unexpectedError")
         );
-      } else if (result?.url) {
-        router.push("/home");
-      } else {
-        setError(t("unexpectedError"));
+        return;
       }
+
+      // Successful login
+      router.push(`/${locale}/home`);
     } catch (error) {
       console.error("Client-side error:", error);
       setError(t("unexpectedError"));
@@ -56,23 +63,12 @@ export default function SignInPage() {
     setIsLoading(true);
 
     try {
-      const result = await signIn("google", {
-        redirect: false,
-        callbackUrl: "/home",
+      await signIn("google", {
+        callbackUrl: `/${locale}/home`,
       });
-
-      if (result?.error) {
-        console.error("Google sign-in error:", result.error);
-        setError(t("googleSignInError"));
-      } else if (result?.url) {
-        router.push("/home");
-      } else {
-        setError(t("unexpectedError"));
-      }
     } catch (error) {
-      console.error("Client-side Google error:", error);
+      console.error("Google sign-in error:", error);
       setError(t("googleSignInError"));
-    } finally {
       setIsLoading(false);
     }
   }
@@ -82,8 +78,8 @@ export default function SignInPage() {
       <div className="relative w-full max-w-md p-8 backdrop-blur-md bg-white/30 dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl transform transition-all duration-300 hover:shadow-lg">
         <div className="absolute -top-4 -left-4 w-16 h-16 bg-orange-500/20 rounded-full blur-md"></div>
         <div className="relative z-10">
-          <div className="flex justify-center mb-6">
-            <LocaleSwitcher />
+          <div className="flex justify-end mb-6">
+            <LanguageSwitcher />
           </div>
           <h1 className="text-4xl font-bold mb-8 text-center text-gray-800 dark:text-gray-100 animate-fade-in">
             {t("title")}

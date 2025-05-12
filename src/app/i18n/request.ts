@@ -1,13 +1,18 @@
 import { getRequestConfig } from 'next-intl/server';
-import { locales } from '.';
+import { locales, defaultLocale } from '.';
 
 export default getRequestConfig(async ({ locale }) => {
+  // Use defaultLocale if locale is undefined
+  const currentLocale = locale || defaultLocale;
+  
   // Validate that the incoming locale is valid
-  if (!locales.includes(locale as any)) {
-    throw new Error(`Locale '${locale}' is not supported`);
+  if (!locales.includes(currentLocale as any)) {
+    throw new Error(`Locale '${currentLocale}' is not supported`);
   }
 
   return {
-    messages: (await import(`../messages/${locale}.json`)).default
+    locale: currentLocale,
+    messages: (await import(`../messages/${currentLocale}.json`)).default,
+    timeZone: 'UTC'
   };
 });

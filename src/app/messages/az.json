@@ -15,15 +15,40 @@
       "loggingIn": "Daxil olunur..."
     },
     "Home": {
-    "title": "Kəşf et",
-    "menu": "Menyu",
-    "subtitle": "Menyumuzla ləzzət dünyasını kəşf edin.",
-    "explore": "Menyumuza bax"
-  }
-,
+      "title": "Kəşf et",
+      "menu": "Menyu",
+      "subtitle": "Menyumuzla ləzzət dünyasını kəşf edin.",
+      "explore": "Menyumuza bax",
+      "welcome": "Resept Tətbiqinə Xoş Gəlmisiniz",
+      "description": "Dünyanın hər yerindən ləzzətli reseptləri kəşf edin və paylaşın",
+      "getStarted": "Başlayın",
+      "featured": "Seçilmiş Reseptlər"
+    },
     "LocaleSwitcher": {
       "en": "English",
       "ru": "Русский",
       "az": "Azərbaycan"
+    },
+    "Header": {
+      "title": "Resept Tətbiqi",
+      "home": "Ana Səhifə",
+      "recipes": "Reseptlər",
+      "about": "Haqqımızda"
+    },
+    "Recipes": {
+      "title": "Bütün Reseptlər",
+      "search": "Reseptləri axtar...",
+      "filter": "Kateqoriyaya görə filtrlə",
+      "noResults": "Resept tapılmadı"
+    },
+    "About": {
+      "title": "Haqqımızda",
+      "description": "Biz gözəl reseptləri və mətbəx təcrübələrini paylaşmağa həvəsliyik",
+      "contact": "Bizimlə Əlaqə"
+    },
+    "Common": {
+      "loading": "Yüklənir...",
+      "error": "Xəta baş verdi",
+      "retry": "Yenidən cəhd edin"
     }
   }

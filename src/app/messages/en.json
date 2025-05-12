@@ -7,7 +7,7 @@
       "passwordPlaceholder": "Enter your password",
       "loginButton": "Login",
       "loginWithGoogle": "Login with Google",
-      "registerPrompt": "Don’t have an account?",
+      "registerPrompt": "Don't have an account?",
       "registerLink": "Register",
       "invalidCredentials": "Invalid email or password",
       "unexpectedError": "An unexpected error occurred. Please try again.",
@@ -20,11 +20,37 @@
     "title": "Discover",
     "menu": "Menu",
     "subtitle": "Explore a world of flavors with our menu.",
-    "explore": "Explore our menu"
+    "explore": "Explore our menu",
+    "welcome": "Welcome to Recipe App",
+    "description": "Discover and share delicious recipes from around the world",
+    "getStarted": "Get Started",
+    "featured": "Featured Recipes"
   },
     "LocaleSwitcher": {
       "en": "English",
       "ru": "Русский",
       "az": "Azərbaycan"
+    },
+    "Header": {
+      "title": "Recipe App",
+      "home": "Home",
+      "recipes": "Recipes",
+      "about": "About"
+    },
+    "Recipes": {
+      "title": "All Recipes",
+      "search": "Search recipes...",
+      "filter": "Filter by category",
+      "noResults": "No recipes found"
+    },
+    "About": {
+      "title": "About Us",
+      "description": "We are passionate about sharing great recipes and cooking experiences",
+      "contact": "Contact Us"
+    },
+    "Common": {
+      "loading": "Loading...",
+      "error": "An error occurred",
+      "retry": "Try again"
     }
   }
