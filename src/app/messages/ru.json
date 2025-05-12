@@ -14,6 +14,12 @@
       "googleSignInError": "Не удалось войти через Google. Попробуйте снова.",
       "loggingIn": "Вход в систему..."
     },
+    "Home": {
+    "title": "Откройте",
+    "menu": "Меню",
+    "subtitle": "Откройте мир вкусов с нашим меню.",
+    "explore": "Посмотреть меню"
+  },
     "LocaleSwitcher": {
       "en": "English",
       "ru": "Русский",

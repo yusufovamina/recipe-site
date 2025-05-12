@@ -14,6 +14,13 @@
       "googleSignInError": "Google ilə daxil olmaq alınmadı. Yenidən cəhd edin.",
       "loggingIn": "Daxil olunur..."
     },
+    "Home": {
+    "title": "Kəşf et",
+    "menu": "Menyu",
+    "subtitle": "Menyumuzla ləzzət dünyasını kəşf edin.",
+    "explore": "Menyumuza bax"
+  }
+,
     "LocaleSwitcher": {
       "en": "English",
       "ru": "Русский",

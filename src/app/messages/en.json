@@ -14,6 +14,14 @@
       "googleSignInError": "Failed to sign in with Google. Please try again.",
       "loggingIn": "Logging in..."
     },
+
+
+    "Home": {
+    "title": "Discover",
+    "menu": "Menu",
+    "subtitle": "Explore a world of flavors with our menu.",
+    "explore": "Explore our menu"
+  },
     "LocaleSwitcher": {
       "en": "English",
       "ru": "Русский",

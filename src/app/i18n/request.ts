@@ -1,15 +1,13 @@
-import { getRequestConfig } from "next-intl/server";
-import { defaultLocale, locales } from ".";
-
-interface Messages {
-  [key: string]: any;
-}
+import { getRequestConfig } from 'next-intl/server';
+import { locales } from '.';
 
 export default getRequestConfig(async ({ locale }) => {
-  const supportedLocale = locales.includes(locale as any) ? locale : defaultLocale;
-  const messages: Messages = (await import(`../messages/${supportedLocale}.json`)).default;
+  // Validate that the incoming locale is valid
+  if (!locales.includes(locale as any)) {
+    throw new Error(`Locale '${locale}' is not supported`);
+  }
+
   return {
-    locale: supportedLocale,
-    messages,
+    messages: (await import(`../messages/${locale}.json`)).default
   };
 });
