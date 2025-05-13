@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { Recipe } from '../../../types';
 import FeaturedItemsCarousel from '@/components/FeaturedItemsCarousel';
+import CustomerReviews from '@/components/CustomerReviews';
 
 async function getRecipes(): Promise<Recipe[]> {
   const res = await fetch("https://free-food-menus-api-two.vercel.app/best-foods?limit=3");
@@ -39,6 +40,8 @@ export default function HomePage() {
       </section>
 
       <FeaturedItemsCarousel recipes={recipes} />
+      
+      <CustomerReviews />
     </div>
   );
 }

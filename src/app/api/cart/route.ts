@@ -17,8 +17,33 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // For now, return empty array as we haven't implemented the database yet
-    return NextResponse.json([]);
+    const cart = await prisma.cart.findUnique({
+      where: { userId: session.user.id },
+      include: {
+        items: true,
+      },
+    });
+
+    if (!cart) {
+      return NextResponse.json([]);
+    }
+
+    // Fetch recipe details for each cart item
+    const cartItemsWithDetails = await Promise.all(
+      cart.items.map(async (item) => {
+        // Here you would typically fetch recipe details from your recipe database
+        // For now, we'll return the basic cart item info
+        return {
+          id: item.id,
+          recipeId: item.recipeId,
+          quantity: item.quantity,
+          price: item.price,
+          // Add any additional recipe details you want to display
+        };
+      })
+    );
+
+    return NextResponse.json(cartItemsWithDetails);
   } catch (error) {
     console.error("Error fetching cart:", error);
     return NextResponse.json(
@@ -36,10 +61,18 @@ export async function POST(request: Request) {
     }
 
     const data = await request.json();
-    const { recipeId, quantity, price } = data;
+    const { recipeId, quantity, price, name, image } = data;
+
+    if (!recipeId || !quantity || !price) {
+      return NextResponse.json(
+        { error: "Missing required fields" },
+        { status: 400 }
+      );
+    }
 
     let cart = await prisma.cart.findUnique({
       where: { userId: session.user.id },
+      include: { items: true },
     });
 
     if (!cart) {
@@ -73,6 +106,8 @@ export async function POST(request: Request) {
         recipeId,
         quantity,
         price,
+        name,
+        image,
       },
     });
 

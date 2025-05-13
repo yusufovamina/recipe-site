@@ -8,7 +8,7 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  id            String    @id @map("_id")
   name          String?
   email         String?   @unique
   emailVerified DateTime?
@@ -27,7 +27,7 @@ model User {
 
 model Account {
   id                String  @id @default(auto()) @map("_id") @db.ObjectId
-  userId            String  @db.ObjectId
+  userId            String
   type              String
   provider          String
   providerAccountId String
@@ -47,7 +47,7 @@ model Account {
 model Session {
   id           String   @id @default(auto()) @map("_id") @db.ObjectId
   sessionToken String   @unique
-  userId       String   @db.ObjectId
+  userId       String
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
@@ -63,7 +63,7 @@ model VerificationToken {
 
 model Cart {
   id        String     @id @default(auto()) @map("_id") @db.ObjectId
-  userId    String     @unique @db.ObjectId
+  userId    String     @unique
   user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   items     CartItem[]
   createdAt DateTime   @default(now())
@@ -74,7 +74,9 @@ model CartItem {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   cartId    String   @db.ObjectId
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  recipeId  String   @db.ObjectId
+  recipeId  String
+  name      String
+  image     String?
   quantity  Int
   price     Float
   createdAt DateTime @default(now())
@@ -83,7 +85,7 @@ model CartItem {
 
 model Order {
   id            String      @id @default(auto()) @map("_id") @db.ObjectId
-  userId        String      @db.ObjectId
+  userId        String
   user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
   items         OrderItem[]
   status        OrderStatus @default(PENDING)

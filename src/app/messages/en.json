@@ -45,8 +45,19 @@
     "welcome": "Welcome to Recipe App",
     "description": "Discover and share delicious recipes from around the world",
     "getStarted": "Get Started",
-    "featured": "Featured Recipes"
+    "featured": "Featured Recipes",
+    "reviewsTitle": "What Our Customers Say",
+    "reviewsSubtitle": "Hear from our satisfied customers about their experience with us"
   },
+    "Menu": {
+      "title": "Our Menu",
+      "loading": "Loading menu...",
+      "all": "All",
+      "noResults": "No items found. Try a different search!",
+      "addToCart": "Add to Cart",
+      "remove": "Remove",
+      "viewCart": "View Cart"
+    },
     "LocaleSwitcher": {
       "en": "English",
       "ru": "Русский",
@@ -97,5 +108,44 @@
       "name": "Name",
       "email": "Email",
       "saveChanges": "Save Changes"
+    },
+    "Cart": {
+      "yourCart": "Your Cart",
+      "loading": "Loading cart...",
+      "emptyCart": "Your cart is empty",
+      "continueShopping": "Continue Shopping",
+      "cartItems": "Cart Items",
+      "total": "Total",
+      "proceedToCheckout": "Proceed to Checkout"
+    },
+    "Checkout": {
+      "checkout": "Checkout",
+      "loading": "Loading checkout...",
+      "deliveryMethod": "Delivery Method",
+      "delivery": "Delivery",
+      "pickup": "Self Pickup",
+      "address": "Delivery Address",
+      "contactInfo": "Contact Information",
+      "phone": "Phone Number",
+      "paymentMethod": "Payment Method",
+      "card": "Credit/Debit Card",
+      "cash": "Cash on Delivery",
+      "cardNumber": "Card Number",
+      "cardExpiry": "Expiry Date",
+      "cardCvc": "CVC",
+      "orderSummary": "Order Summary",
+      "total": "Total",
+      "placeOrder": "Place Order",
+      "processing": "Processing...",
+      "addressRequired": "Please enter your delivery address",
+      "phoneRequired": "Please enter your phone number",
+      "cardDetailsRequired": "Please enter all card details",
+      "orderError": "Failed to place order. Please try again."
+    },
+    "OrderSuccess": {
+      "orderSuccess": "Order Placed Successfully!",
+      "orderConfirmation": "Thank you for your order. We'll send you a confirmation email with your order details.",
+      "viewOrders": "View My Orders",
+      "continueShopping": "Continue Shopping"
     }
   }
