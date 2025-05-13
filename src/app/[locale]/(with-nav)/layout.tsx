@@ -11,12 +11,15 @@ import {
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Recipe } from "../../../types";
+import { useSession, signOut } from "next-auth/react";
+import { UserCircle } from "lucide-react";
   
   export default function WithNavLayout({ children }: { children: React.ReactNode }) {
     const [searchQuery, setSearchQuery] = useState("");
     const [recipes, setRecipes] = useState<any[]>([]);
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const router = useRouter();
+    const { data: session } = useSession();
   
     useEffect(() => {
       async function fetchRecipes() {
@@ -75,8 +78,8 @@ import { Recipe } from "../../../types";
               <span className="text-2xl font-bold text-gray-800 dark:text-gray-100">Flavor Fusion</span>
             </Link>
           </div>
-          <div className="flex-1 max-w-md mx-4">
-            <form onSubmit={handleSearch} className="relative">
+          <div className="hidden md:flex md:items-center md:space-x-8">
+            <form onSubmit={handleSearch} className="relative w-96">
               <input
                 type="text"
                 value={searchQuery}
@@ -112,8 +115,7 @@ import { Recipe } from "../../../types";
                 </ul>
               )}
             </form>
-          </div>
-          <div className="flex space-x-4">
+
             <Link href="/menu" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
               Menu
             </Link>
@@ -126,49 +128,76 @@ import { Recipe } from "../../../types";
             <Link href="/contact" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
               Contact
             </Link>
-            <Link href="/sign-in" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
-              Login
-            </Link>
-            <Link href="/sign-up" className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400">
-              Contact
-            </Link>
+
+            {session ? (
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/dashboard"
+                  className="flex items-center space-x-2 text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400"
+                >
+                  <UserCircle className="w-5 h-5" />
+                  <span>Dashboard</span>
+                </Link>
+                <button
+                  onClick={() => signOut()}
+                  className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400"
+                >
+                  Sign Out
+                </button>
+              </div>
+            ) : (
+              <div className="flex items-center space-x-4">
+                <Link
+                  href="/sign-in"
+                  className="text-gray-600 dark:text-gray-300 hover:text-orange-500 dark:hover:text-orange-400"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/sign-up"
+                  className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition-colors"
+                >
+                  Sign Up
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       </div>
     </nav>
         </header>
         <main className="flex-grow">{children}</main>
-        <footer className="border-t py-8 px-4 md:px-8 bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-400">
-  <div className="max-w-6xl mx-auto">
+        <footer className="bg-white dark:bg-gray-800 border-t py-12">
+  <div className="max-w-6xl mx-auto px-4">
     <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
       {/* Company Info */}
       <div className="mb-6 md:mb-0">
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Recipe App</h3>
-        <p className="text-sm">© 2025 All rights reserved.</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">© 2025 All rights reserved.</p>
       </div>
       {/* Contact */}
       <div>
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Contact</h3>
-        <p className="text-sm">Phone: +1 (555) 123-4567</p>
-        <p className="text-sm">Email: <a href="mailto:support@recipeapp.com" className="hover:text-orange-500 transition-colors duration-300">support@recipeapp.com</a></p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Phone: +1 (555) 123-4567</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">Email: <a href="mailto:support@recipeapp.com" className="hover:text-orange-500 transition-colors duration-300">support@recipeapp.com</a></p>
       </div>
       {/* Location */}
       <div>
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Location</h3>
-        <p className="text-sm">123 Flavor St, Food City, FC 12345</p>
+        <p className="text-sm text-gray-600 dark:text-gray-400">123 Flavor St, Food City, FC 12345</p>
       </div>
       {/* Social & Policy */}
       <div>
         <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Connect</h3>
         <div className="flex flex-col gap-1">
-          <a href="https://facebook.com/recipeapp" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-orange-500 transition-colors duration-300">Facebook</a>
-          <a href="https://twitter.com/recipeapp" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-orange-500 transition-colors duration-300">Twitter</a>
-          <a href="https://instagram.com/recipeapp" target="_blank" rel="noopener noreferrer" className="text-sm hover:text-orange-500 transition-colors duration-300">Instagram</a>
-          <a href="/privacy" className="text-sm hover:text-orange-500 transition-colors duration-300">Privacy Policy</a>
+          <a href="https://facebook.com/recipeapp" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors duration-300">Facebook</a>
+          <a href="https://twitter.com/recipeapp" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors duration-300">Twitter</a>
+          <a href="https://instagram.com/recipeapp" target="_blank" rel="noopener noreferrer" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors duration-300">Instagram</a>
+          <a href="/privacy" className="text-sm text-gray-600 dark:text-gray-400 hover:text-orange-500 transition-colors duration-300">Privacy Policy</a>
         </div>
       </div>
     </div>
-    <div className="mt-6 border-t border-gray-200 dark:border-gray-700 pt-4 text-sm text-center">
+    <div className="mt-8 text-center text-sm text-gray-600 dark:text-gray-400">
       <p>Made by Amina Yusufova</p>
     </div>
   </div>

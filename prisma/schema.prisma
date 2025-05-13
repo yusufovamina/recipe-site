@@ -6,15 +6,19 @@ datasource db {
   provider = "mongodb"
   url      = env("DATABASE_URL")
 }
+
 model User {
   id            String    @id @default(auto()) @map("_id") @db.ObjectId
   name          String?
   email         String?   @unique
   emailVerified DateTime?
   image         String?
-  password      String?  // Добавляем поле для пароля
+  password      String?
   accounts      Account[] 
   sessions      Session[]
+  cart          Cart?
+  orders        Order[]
+  role          Role      @default(USER)
 
   // Автоматические поля
   createdAt     DateTime @default(now())
@@ -27,12 +31,12 @@ model Account {
   type              String
   provider          String
   providerAccountId String
-  refresh_token     String?  // Убираем @db.Text
-  access_token      String?  // Убираем @db.Text
+  refresh_token     String?
+  access_token      String?
   expires_at        Int?
   token_type        String?
   scope             String?
-  id_token          String?  // Убираем @db.Text
+  id_token          String?
   session_state     String?
 
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -55,4 +59,69 @@ model VerificationToken {
   expires     DateTime
 
   @@unique([identifier, token])
+}
+
+model Cart {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String     @unique @db.ObjectId
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  cartId    String   @db.ObjectId
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  recipeId  String   @db.ObjectId
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Order {
+  id            String      @id @default(auto()) @map("_id") @db.ObjectId
+  userId        String      @db.ObjectId
+  user          User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items         OrderItem[]
+  status        OrderStatus @default(PENDING)
+  totalAmount   Float
+  address       String
+  phoneNumber   String
+  paymentStatus PaymentStatus @default(PENDING)
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+}
+
+model OrderItem {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  orderId   String   @db.ObjectId
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  recipeId  String   @db.ObjectId
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  SHIPPED
+  DELIVERED
+  CANCELLED
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
+  REFUNDED
 }
