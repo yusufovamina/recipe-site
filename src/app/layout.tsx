@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl';
 import LanguageSwitcher from './components/LanguageSwitcher';
 import './globals.css';
 import { defaultLocale } from './i18n';
+import AuthProvider from "@/components/auth/provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -39,14 +40,16 @@ export default async function RootLayout({
   return (
     <html lang={locale} className="dark">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <div className="flex justify-end p-4">
-            <LanguageSwitcher />
-          </div>
-          <main className="container mx-auto px-4 py-8">
-            {children}
-          </main>
-        </NextIntlClientProvider>
+        <AuthProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <div className="flex justify-end p-4">
+              <LanguageSwitcher />
+            </div>
+            <main className="container mx-auto px-4 py-8">
+              {children}
+            </main>
+          </NextIntlClientProvider>
+        </AuthProvider>
       </body>
     </html>
   );

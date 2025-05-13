@@ -23,10 +23,9 @@ export function generateStaticParams() {
   return locales.map((locale) => ({locale}));
 }
 
-export default async function LocaleLayout({
-  children,
-  params: {locale}
-}: Props) {
+export default async function LocaleLayout(props: Props) {
+  const locale = props.params.locale;
+  
   // Validate that the incoming `locale` parameter is valid
   if (!locales.includes(locale as any)) notFound();
 
@@ -36,7 +35,7 @@ export default async function LocaleLayout({
     <html lang={locale}>
       <body className={inter.className}>
         <Providers locale={locale} messages={messages}>
-          {children}
+          {props.children}
         </Providers>
       </body>
     </html>

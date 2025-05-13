@@ -1,5 +1,8 @@
-import {NextIntlClientProvider} from 'next-intl';
-import {ReactNode} from 'react';
+'use client';
+
+import { NextIntlClientProvider } from 'next-intl';
+import { SessionProvider } from 'next-auth/react';
+import { ReactNode } from 'react';
 
 type Props = {
   locale: string;
@@ -7,10 +10,12 @@ type Props = {
   children: ReactNode;
 };
 
-export default function Providers({children, locale, messages}: Props) {
+export default function Providers({ children, locale, messages }: Props) {
   return (
-    <NextIntlClientProvider locale={locale} messages={messages}>
-      {children}
-    </NextIntlClientProvider>
+    <SessionProvider>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        {children}
+      </NextIntlClientProvider>
+    </SessionProvider>
   );
 } 

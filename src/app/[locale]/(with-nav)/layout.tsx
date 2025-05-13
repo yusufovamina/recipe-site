@@ -19,7 +19,8 @@ import { UserCircle } from "lucide-react";
     const [recipes, setRecipes] = useState<any[]>([]);
     const [suggestions, setSuggestions] = useState<string[]>([]);
     const router = useRouter();
-    const { data: session } = useSession();
+    const { data: session, status } = useSession();
+    const isLoading = status === "loading";
   
     useEffect(() => {
       async function fetchRecipes() {
@@ -66,6 +67,10 @@ import { UserCircle } from "lucide-react";
       setSearchQuery("");
       setSuggestions([]);
     };
+  
+    if (isLoading) {
+      return <div>Loading...</div>;
+    }
   
     return (
       <div className="min-h-screen flex flex-col">
@@ -129,7 +134,7 @@ import { UserCircle } from "lucide-react";
               Contact
             </Link>
 
-            {session ? (
+            {status === "authenticated" ? (
               <div className="flex items-center space-x-4">
                 <Link
                   href="/dashboard"
