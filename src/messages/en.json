@@ -1,0 +1,69 @@
+{
+  "Header": {
+    "title": "Flavor Fusion",
+    "menu": "Menu",
+    "recipes": "Recipes",
+    "location": "Location",
+    "contact": "Contact",
+    "signIn": "Sign In",
+    "signUp": "Sign Up",
+    "searchPlaceholder": "Search menu items..."
+  },
+  "Cart": {
+    "cart": "Shopping Cart",
+    "emptyCart": "Your cart is empty",
+    "total": "Total",
+    "checkout": "Checkout",
+    "quantity": "Quantity",
+    "addToCart": "Add to Cart",
+    "addedToCart": "Added to Cart",
+    "removeFromCart": "Remove from Cart",
+    "updateQuantity": "Update Quantity"
+  },
+  "Checkout": {
+    "checkout": "Checkout",
+    "orderSummary": "Order Summary",
+    "shippingDetails": "Shipping Details",
+    "address": "Delivery Address",
+    "phoneNumber": "Phone Number",
+    "phone": "Phone Number",
+    "placeOrder": "Place Order",
+    "continueShopping": "Continue Shopping",
+    "emptyCart": "Your cart is empty",
+    "quantity": "Quantity",
+    "total": "Total",
+    "deliveryMethod": "Delivery Method",
+    "delivery": "Delivery",
+    "pickup": "Self Pickup",
+    "paymentMethod": "Payment Method",
+    "card": "Credit/Debit Card",
+    "cash": "Cash on Delivery",
+    "processing": "Processing...",
+    "orderSuccess": "Order Placed Successfully!",
+    "orderConfirmation": "Thank you for your order"
+  },
+  "Dashboard": {
+    "dashboard": "My Dashboard",
+    "orders": "My Orders",
+    "noOrders": "You haven't placed any orders yet",
+    "orderDate": "Order Date",
+    "orderId": "Order ID",
+    "address": "Delivery Address",
+    "phoneNumber": "Phone Number",
+    "quantity": "Quantity",
+    "total": "Total",
+    "orderStatus": {
+      "pending": "Pending",
+      "processing": "Processing",
+      "shipped": "Shipped",
+      "delivered": "Delivered",
+      "cancelled": "Cancelled"
+    },
+    "paymentStatus": {
+      "pending": "Payment Pending",
+      "paid": "Paid",
+      "failed": "Payment Failed",
+      "refunded": "Refunded"
+    }
+  }
+} 

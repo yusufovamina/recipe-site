@@ -10,40 +10,23 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const userId = searchParams.get("userId");
-
-    if (userId !== session.user.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const cart = await prisma.cart.findUnique({
+    // Find or create cart
+    let cart = await prisma.cart.findUnique({
       where: { userId: session.user.id },
-      include: {
-        items: true,
-      },
+      include: { items: true },
     });
 
     if (!cart) {
-      return NextResponse.json([]);
+      cart = await prisma.cart.create({
+        data: {
+          userId: session.user.id,
+          items: [],
+        },
+        include: { items: true },
+      });
     }
 
-    // Fetch recipe details for each cart item
-    const cartItemsWithDetails = await Promise.all(
-      cart.items.map(async (item) => {
-        // Here you would typically fetch recipe details from your recipe database
-        // For now, we'll return the basic cart item info
-        return {
-          id: item.id,
-          recipeId: item.recipeId,
-          quantity: item.quantity,
-          price: item.price,
-          // Add any additional recipe details you want to display
-        };
-      })
-    );
-
-    return NextResponse.json(cartItemsWithDetails);
+    return NextResponse.json(cart);
   } catch (error) {
     console.error("Error fetching cart:", error);
     return NextResponse.json(
@@ -53,26 +36,19 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
     const session = await auth();
     if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const data = await request.json();
-    const { recipeId, quantity, price, name, image } = data;
+    const body = await req.json();
+    const { items } = body;
 
-    if (!recipeId || !quantity || !price) {
-      return NextResponse.json(
-        { error: "Missing required fields" },
-        { status: 400 }
-      );
-    }
-
+    // Find or create cart
     let cart = await prisma.cart.findUnique({
       where: { userId: session.user.id },
-      include: { items: true },
     });
 
     if (!cart) {
@@ -83,64 +59,36 @@ export async function POST(request: Request) {
       });
     }
 
-    const existingItem = await prisma.cartItem.findFirst({
-      where: {
-        cartId: cart.id,
-        recipeId,
-      },
+    // Delete existing items
+    await prisma.cartItem.deleteMany({
+      where: { cartId: cart.id },
     });
 
-    if (existingItem) {
-      const updatedItem = await prisma.cartItem.update({
-        where: { id: existingItem.id },
-        data: {
-          quantity: existingItem.quantity + quantity,
-        },
+    // Create new items
+    if (items && items.length > 0) {
+      await prisma.cartItem.createMany({
+        data: items.map((item: any) => ({
+          cartId: cart.id,
+          recipeId: item.id,
+          name: item.name,
+          image: item.image,
+          quantity: item.quantity,
+          price: item.price,
+        })),
       });
-      return NextResponse.json(updatedItem);
     }
 
-    const newItem = await prisma.cartItem.create({
-      data: {
-        cartId: cart.id,
-        recipeId,
-        quantity,
-        price,
-        name,
-        image,
-      },
+    // Return updated cart
+    const updatedCart = await prisma.cart.findUnique({
+      where: { id: cart.id },
+      include: { items: true },
     });
 
-    return NextResponse.json(newItem);
+    return NextResponse.json(updatedCart);
   } catch (error) {
-    console.error("Error adding to cart:", error);
+    console.error("Error updating cart:", error);
     return NextResponse.json(
-      { error: "Failed to add to cart" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function PUT(request: Request) {
-  try {
-    const session = await auth();
-    if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    const data = await request.json();
-    const { itemId, quantity } = data;
-
-    const updatedItem = await prisma.cartItem.update({
-      where: { id: itemId },
-      data: { quantity },
-    });
-
-    return NextResponse.json(updatedItem);
-  } catch (error) {
-    console.error("Error updating cart item:", error);
-    return NextResponse.json(
-      { error: "Failed to update cart item" },
+      { error: "Failed to update cart" },
       { status: 500 }
     );
   }
@@ -153,25 +101,19 @@ export async function DELETE(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const { searchParams } = new URL(request.url);
-    const itemId = searchParams.get("itemId");
-
-    if (!itemId) {
-      return NextResponse.json(
-        { error: "Item ID is required" },
-        { status: 400 }
-      );
-    }
-
-    await prisma.cartItem.delete({
-      where: { id: itemId },
+    await prisma.cartItem.deleteMany({
+      where: {
+        cart: {
+          userId: session.user.id,
+        },
+      },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ message: "Cart cleared successfully" });
   } catch (error) {
-    console.error("Error removing from cart:", error);
+    console.error("Error clearing cart:", error);
     return NextResponse.json(
-      { error: "Failed to remove from cart" },
+      { error: "Failed to clear cart" },
       { status: 500 }
     );
   }

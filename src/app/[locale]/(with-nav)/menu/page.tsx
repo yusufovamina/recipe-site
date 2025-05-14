@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { useTranslations } from "next-intl";
+import { useCartStore } from '@/lib/store/cartStore';
 
 interface Recipe {
   id: string;
@@ -31,11 +32,11 @@ export default function MenuPage() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search")?.toLowerCase() || "";
   const [recipes, setRecipes] = useState<Recipe[]>([]);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
   const t = useTranslations('Menu');
+  const { addItem, removeItem, items } = useCartStore();
 
   useEffect(() => {
     async function fetchRecipes() {
@@ -80,61 +81,25 @@ export default function MenuPage() {
       }
     }
     fetchRecipes();
-    if (session?.user?.id) {
-      fetchCartItems();
-    }
-  }, [session]);
+  }, []);
 
-  const fetchCartItems = async () => {
-    try {
-      const response = await fetch(`/api/cart?userId=${session?.user?.id}`);
-      if (!response.ok) throw new Error('Failed to fetch cart');
-      const items = await response.json();
-      setCartItems(items);
-    } catch (error) {
-      console.error('Error fetching cart:', error);
-    }
-  };
-
-  const addToCart = async (recipe: Recipe) => {
+  const handleAddToCart = (recipe: Recipe) => {
     if (!session) {
       router.push('/sign-in');
       return;
     }
 
-    try {
-      const response = await fetch('/api/cart', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          recipeId: recipe.id,
-          quantity: 1,
-          price: recipe.price,
-          name: recipe.name,
-          image: recipe.image,
-        }),
-      });
-
-      if (!response.ok) throw new Error('Failed to add to cart');
-      fetchCartItems(); // Refresh cart items
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    }
+    addItem({
+      id: recipe.id,
+      name: recipe.name,
+      price: recipe.price,
+      image: recipe.image,
+      quantity: 1,
+    });
   };
 
-  const removeFromCart = async (recipeId: string) => {
-    const cartItem = cartItems.find(item => item.recipeId === recipeId);
-    if (!cartItem) return;
-
-    try {
-      const response = await fetch(`/api/cart?itemId=${cartItem.id}`, {
-        method: 'DELETE',
-      });
-      if (!response.ok) throw new Error('Failed to remove from cart');
-      fetchCartItems(); // Refresh cart items
-    } catch (error) {
-      console.error('Error removing from cart:', error);
-    }
+  const handleRemoveFromCart = (recipeId: string) => {
+    removeItem(recipeId);
   };
 
   const filteredRecipes = recipes.filter(
@@ -206,41 +171,49 @@ export default function MenuPage() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                   {categoryRecipes.map((recipe) => (
-                    <Card key={recipe.id} className="overflow-hidden">
+                    <Card key={recipe.id} className="group overflow-hidden transform transition-all duration-300 hover:scale-105 hover:shadow-xl bg-white dark:bg-gray-800">
                       <Link href={`/recipes/${recipe.id}`}>
-                        <img
-                          src={recipe.image}
-                          alt={recipe.name}
-                          className="w-full h-48 object-cover"
-                        />
+                        <div className="relative">
+                          <img
+                            src={recipe.image}
+                            alt={recipe.name}
+                            className="w-full h-56 object-cover transition-transform duration-300 group-hover:scale-110"
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                        </div>
                       </Link>
-                      <CardContent className="p-4">
-                        <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100">
-                          {recipe.name}
-                        </h3>
-                        <p className="text-gray-600 dark:text-gray-400 mt-2 line-clamp-2">
-                          {recipe.description}
-                        </p>
-                        <p className="text-orange-500 font-bold mt-2">
-                          ${recipe.price.toFixed(2)}
-                        </p>
-                        <div className="mt-4 flex space-x-2">
+                      <CardContent className="p-6">
+                        <div className="flex justify-between items-start mb-4">
+                          <div>
+                            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 group-hover:text-orange-500 transition-colors duration-300">
+                              {recipe.name}
+                            </h3>
+                            <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 line-clamp-2 h-10">
+                              {recipe.description}
+                            </p>
+                          </div>
+                          <span className="text-lg font-bold text-orange-500">
+                            ${recipe.price.toFixed(2)}
+                          </span>
+                        </div>
+                        <div className="flex justify-between items-center mt-4">
                           <Button
                             onClick={(e) => {
                               e.preventDefault();
-                              addToCart(recipe);
+                              handleAddToCart(recipe);
                             }}
-                            className="bg-orange-500 hover:bg-orange-600"
+                            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-full transition-all duration-300 transform hover:scale-105"
                           >
-                            {t('addToCart')}
+                            {items.some(item => item.id === recipe.id) ? t('addMore') : t('addToCart')}
                           </Button>
-                          {cartItems.some(item => item.recipeId === recipe.id) && (
+                          {items.some(item => item.id === recipe.id) && (
                             <Button
                               onClick={(e) => {
                                 e.preventDefault();
-                                removeFromCart(recipe.id);
+                                handleRemoveFromCart(recipe.id);
                               }}
-                              variant="destructive"
+                              variant="outline"
+                              className="text-red-500 hover:text-white hover:bg-red-500 border-red-500 rounded-full transition-all duration-300"
                             >
                               {t('remove')}
                             </Button>
@@ -253,17 +226,6 @@ export default function MenuPage() {
               </div>
             );
           })}
-        </div>
-      )}
-
-      {cartItems.length > 0 && (
-        <div className="fixed bottom-0 right-0 m-4">
-          <Button
-            onClick={() => router.push("/cart")}
-            className="bg-orange-500 hover:bg-orange-600"
-          >
-            {t('viewCart')} ({cartItems.length})
-          </Button>
         </div>
       )}
     </div>

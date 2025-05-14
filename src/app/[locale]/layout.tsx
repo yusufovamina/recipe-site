@@ -1,15 +1,11 @@
-import {Inter} from 'next/font/google';
-import {notFound} from 'next/navigation';
-import {ReactNode} from 'react';
-import {locales} from '../i18n';
-import Providers from './providers';
+import { Inter } from 'next/font/google';
+import { NextIntlClientProvider } from 'next-intl';
+import { notFound } from 'next/navigation';
+import { CartProvider } from '../context/CartContext';
+import { locales } from '../i18n';
+import SessionProvider from '../providers/SessionProvider';
 
-const inter = Inter({subsets: ['latin']});
-
-type Props = {
-  children: ReactNode;
-  params: {locale: string};
-};
+const inter = Inter({ subsets: ['latin'] });
 
 async function getMessages(locale: string) {
   try {
@@ -20,23 +16,28 @@ async function getMessages(locale: string) {
 }
 
 export function generateStaticParams() {
-  return locales.map((locale) => ({locale}));
+  return locales.map((locale) => ({ locale }));
 }
 
-export default async function LocaleLayout(props: Props) {
-  const locale = props.params.locale;
-  
-  // Validate that the incoming `locale` parameter is valid
-  if (!locales.includes(locale as any)) notFound();
-
+export default async function RootLayout({
+  children,
+  params: { locale }
+}: {
+  children: React.ReactNode;
+  params: { locale: string };
+}) {
   const messages = await getMessages(locale);
 
   return (
     <html lang={locale}>
       <body className={inter.className}>
-        <Providers locale={locale} messages={messages}>
-          {props.children}
-        </Providers>
+        <SessionProvider>
+          <CartProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+          </CartProvider>
+        </SessionProvider>
       </body>
     </html>
   );

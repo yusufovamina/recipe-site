@@ -1,23 +1,24 @@
 {
     "SignInPage": {
-      "title": "Login",
+      "title": "Sign In",
       "emailLabel": "Email",
       "emailPlaceholder": "Enter your email",
       "passwordLabel": "Password",
       "passwordPlaceholder": "Enter your password",
-      "loginButton": "Login",
-      "loginWithGoogle": "Continue with Google",
-      "loginWithGithub": "Continue with GitHub",
-      "registerPrompt": "Don't have an account?",
-      "registerLink": "Register",
+      "signInButton": "Sign In",
+      "signingIn": "Signing in...",
       "invalidCredentials": "Invalid email or password",
-      "unexpectedError": "An unexpected error occurred. Please try again.",
-      "googleSignInError": "Failed to sign in with Google. Please try again.",
-      "githubSignInError": "Failed to sign in with GitHub. Please try again.",
-      "loggingIn": "Logging in..."
+      "unexpectedError": "An unexpected error occurred",
+      "googleSignInError": "Failed to sign in with Google",
+      "githubSignInError": "Failed to sign in with GitHub",
+      "orContinueWith": "Or continue with",
+      "continueWithGoogle": "Continue with Google",
+      "continueWithGithub": "Continue with GitHub",
+      "registerPrompt": "Don't have an account?",
+      "registerLink": "Register"
     },
     "SignUpPage": {
-      "title": "Register",
+      "title": "Sign Up",
       "nameLabel": "Name",
       "namePlaceholder": "Enter your name",
       "emailLabel": "Email",
@@ -27,27 +28,25 @@
       "registerButton": "Register",
       "registering": "Registering...",
       "registrationError": "Registration failed. Please try again.",
-      "googleSignInError": "Failed to sign in with Google. Please try again.",
-      "githubSignInError": "Failed to sign in with GitHub. Please try again.",
+      "googleSignInError": "Failed to sign in with Google",
+      "githubSignInError": "Failed to sign in with GitHub",
       "orContinueWith": "Or continue with",
       "continueWithGoogle": "Continue with Google",
       "continueWithGithub": "Continue with GitHub",
       "loginPrompt": "Already have an account?",
-      "loginLink": "Log In"
+      "loginLink": "Sign In"
     },
 
 
     "Home": {
     "title": "Discover",
     "menu": "Menu",
-    "subtitle": "Explore a world of flavors with our menu.",
-    "explore": "Explore our menu",
+    "subtitle": "Discover a world of flavors with our menu.",
+    "explore": "View Menu",
     "welcome": "Welcome to Recipe App",
     "description": "Discover and share delicious recipes from around the world",
     "getStarted": "Get Started",
-    "featured": "Featured Recipes",
-    "reviewsTitle": "What Our Customers Say",
-    "reviewsSubtitle": "Hear from our satisfied customers about their experience with us"
+    "featured": "Featured Recipes"
   },
     "Menu": {
       "title": "Our Menu",
@@ -55,8 +54,13 @@
       "all": "All",
       "noResults": "No items found. Try a different search!",
       "addToCart": "Add to Cart",
+      "addMore": "Add More",
       "remove": "Remove",
-      "viewCart": "View Cart"
+      "viewCart": "View Cart",
+      "mainDishes": "Main Dishes",
+      "appetizers": "Appetizers",
+      "drinks": "Drinks",
+      "desserts": "Desserts"
     },
     "LocaleSwitcher": {
       "en": "English",
@@ -66,8 +70,14 @@
     "Header": {
       "title": "Recipe App",
       "home": "Home",
-      "recipes": "Recipes",
-      "about": "About"
+      "menu": "Menu",
+      "location": "Location",
+      "contact": "Contact",
+      "signIn": "Sign In",
+      "signUp": "Sign Up",
+      "dashboard": "Dashboard",
+      "signOut": "Sign Out",
+      "searchPlaceholder": "Search menu items..."
     },
     "Recipes": {
       "title": "All Recipes",
@@ -83,64 +93,68 @@
     "Common": {
       "loading": "Loading...",
       "error": "An error occurred",
-      "retry": "Try again"
+      "retry": "Try again",
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "view": "View",
+      "close": "Close"
     },
     "Dashboard": {
-      "welcome": "Welcome, {name}!",
-      "loading": "Loading your dashboard...",
-      "user": "User",
-      "orders": "Orders",
-      "cart": "Cart",
+      "dashboard": "Dashboard",
       "profile": "Profile",
-      "yourOrders": "Your Orders",
-      "orderHistory": "View and track your order history",
-      "noOrders": "You haven't placed any orders yet",
-      "orderNumber": "Order #",
-      "ordered": "Ordered",
-      "total": "Total",
-      "yourCart": "Your Cart",
-      "cartItems": "Items in your shopping cart",
-      "emptyCart": "Your cart is empty",
-      "quantity": "Quantity",
-      "checkout": "Proceed to Checkout",
-      "profileSettings": "Profile Settings",
-      "updateProfile": "Update your personal information",
-      "name": "Name",
-      "email": "Email",
-      "saveChanges": "Save Changes"
+      "orders": "Orders",
+      "noOrders": "No orders found",
+      "refresh": "Refresh orders",
+      "guest": "Guest",
+      "totalOrders": "Total Orders",
+      "memberSince": "Member Since",
+      "orderStatus": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "shipped": "Shipped",
+        "delivered": "Delivered",
+        "cancelled": "Cancelled"
+      },
+      "paymentStatus": {
+        "pending": "Payment Pending",
+        "paid": "Paid",
+        "failed": "Payment Failed",
+        "refunded": "Refunded"
+      },
+      "orderId": "Order ID",
+      "orderDate": "Order Date",
+      "orderTotal": "Order Total",
+      "orderItems": "Order Items",
+      "shippingAddress": "Shipping Address",
+      "phoneNumber": "Phone Number"
     },
     "Cart": {
       "yourCart": "Your Cart",
-      "loading": "Loading cart...",
       "emptyCart": "Your cart is empty",
-      "continueShopping": "Continue Shopping",
-      "cartItems": "Cart Items",
       "total": "Total",
-      "proceedToCheckout": "Proceed to Checkout"
+      "checkout": "Checkout",
+      "continueShopping": "Continue Shopping",
+      "loading": "Loading cart..."
     },
     "Checkout": {
-      "checkout": "Checkout",
-      "loading": "Loading checkout...",
+      "title": "Checkout",
+      "orderDetails": "Order Details",
       "deliveryMethod": "Delivery Method",
       "delivery": "Delivery",
-      "pickup": "Self Pickup",
-      "address": "Delivery Address",
-      "contactInfo": "Contact Information",
+      "pickup": "Pickup",
+      "address": "Address",
+      "addressPlaceholder": "Enter your delivery address",
       "phone": "Phone Number",
-      "paymentMethod": "Payment Method",
-      "card": "Credit/Debit Card",
-      "cash": "Cash on Delivery",
-      "cardNumber": "Card Number",
-      "cardExpiry": "Expiry Date",
-      "cardCvc": "CVC",
-      "orderSummary": "Order Summary",
-      "total": "Total",
+      "phonePlaceholder": "Enter your phone number",
       "placeOrder": "Place Order",
       "processing": "Processing...",
-      "addressRequired": "Please enter your delivery address",
-      "phoneRequired": "Please enter your phone number",
-      "cardDetailsRequired": "Please enter all card details",
-      "orderError": "Failed to place order. Please try again."
+      "orderSuccess": "Order placed successfully!",
+      "orderError": "Failed to place order. Please try again.",
+      "subtotal": "Subtotal",
+      "deliveryFee": "Delivery Fee",
+      "total": "Total"
     },
     "OrderSuccess": {
       "orderSuccess": "Order Placed Successfully!",

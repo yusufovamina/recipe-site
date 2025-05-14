@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "./generated/client"
 }
 
 datasource db {
@@ -74,7 +75,7 @@ model CartItem {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   cartId    String   @db.ObjectId
   cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
-  recipeId  String
+  recipeId  String   @map("recipe_id") @db.String
   name      String
   image     String?
   quantity  Int
@@ -101,7 +102,8 @@ model OrderItem {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   orderId   String   @db.ObjectId
   order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
-  recipeId  String   @db.ObjectId
+  recipeId  String   @map("recipe_id") @db.String
+  name      String
   quantity  Int
   price     Float
   createdAt DateTime @default(now())

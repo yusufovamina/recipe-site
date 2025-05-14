@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
+import { PrismaClient } from '@prisma/client';
+import prisma from '@/lib/prisma';
 
 export async function GET(request: Request) {
   try {
@@ -15,8 +17,17 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // For now, return empty array as we haven't implemented the database yet
-    return NextResponse.json([]);
+    const orders = await prisma.order.findMany({
+      where: { userId: session.user.id },
+      include: {
+        items: true,
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return NextResponse.json(orders);
   } catch (error) {
     console.error("Error fetching orders:", error);
     return NextResponse.json(
@@ -26,50 +37,95 @@ export async function GET(request: Request) {
   }
 }
 
-export async function POST(request: Request) {
+export async function POST(req: Request) {
   try {
     const session = await auth();
+
     if (!session?.user?.id) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      return new NextResponse('Unauthorized', { status: 401 });
     }
 
-    const data = await request.json();
-    const { items, totalAmount, address, phoneNumber } = data;
+    const body = await req.json();
+    console.log('Received order data:', body);
 
-    const order = await prisma.order.create({
-      data: {
-        userId: session.user.id,
-        totalAmount,
-        address,
-        phoneNumber,
-        items: {
-          create: items.map((item: any) => ({
-            recipeId: item.recipeId,
-            quantity: item.quantity,
-            price: item.price,
-          })),
+    const { items, totalAmount, address, phoneNumber, paymentMethod, deliveryMethod } = body;
+
+    if (!items?.length || !totalAmount || !address || !phoneNumber) {
+      console.error('Missing fields:', { items, totalAmount, address, phoneNumber });
+      return new NextResponse(
+        JSON.stringify({ error: 'Missing required fields', fields: { items, totalAmount, address, phoneNumber } }), 
+        { status: 400 }
+      );
+    }
+
+    // Validate items structure
+    const validItems = items.every((item: any) => 
+      item && 
+      typeof item.recipeId === 'string' && 
+      typeof item.quantity === 'number' && 
+      typeof item.price === 'number' &&
+      typeof item.name === 'string'
+    );
+
+    if (!validItems) {
+      console.error('Invalid items format:', items);
+      return new NextResponse(
+        JSON.stringify({ error: 'Invalid items format', items }), 
+        { status: 400 }
+      );
+    }
+
+    try {
+      // Create the order
+      const order = await prisma.order.create({
+        data: {
+          userId: session.user.id,
+          totalAmount,
+          address,
+          phoneNumber,
+          status: 'PENDING',
+          paymentStatus: paymentMethod === 'cash' ? 'PENDING' : 'PAID',
         },
-      },
-      include: {
-        items: true,
-      },
-    });
+      });
 
-    // Clear the user's cart after successful order
-    await prisma.cart.update({
-      where: { userId: session.user.id },
-      data: {
-        items: {
-          deleteMany: {},
-        },
-      },
-    });
+      // Create order items
+      const orderItems = await Promise.all(
+        items.map((item: any) =>
+          prisma.orderItem.create({
+            data: {
+              orderId: order.id,
+              recipeId: item.recipeId,
+              name: item.name,
+              quantity: item.quantity,
+              price: item.price
+            }
+          })
+        )
+      );
 
-    return NextResponse.json(order);
+      // Clear the user's cart after successful order
+      await prisma.cart.deleteMany({
+        where: { userId: session.user.id },
+      });
+
+      return NextResponse.json({ ...order, items: orderItems });
+    } catch (dbError) {
+      console.error('Database error:', dbError);
+      return new NextResponse(
+        JSON.stringify({ 
+          error: 'Database error', 
+          details: dbError instanceof Error ? dbError.message : 'Unknown database error'
+        }), 
+        { status: 500 }
+      );
+    }
   } catch (error) {
-    console.error("Error creating order:", error);
-    return NextResponse.json(
-      { error: "Failed to create order" },
+    console.error('[ORDERS_POST] Error details:', error);
+    return new NextResponse(
+      JSON.stringify({ 
+        error: 'Internal error', 
+        details: error instanceof Error ? error.message : 'Unknown error'
+      }), 
       { status: 500 }
     );
   }
