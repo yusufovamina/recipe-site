@@ -14,12 +14,15 @@ interface CartStore {
   total: number;
   isLoading: boolean;
   error: string | null;
+  userId: string | null;
   addItem: (item: CartItem) => Promise<void>;
   removeItem: (id: string) => Promise<void>;
   updateQuantity: (id: string, quantity: number) => Promise<void>;
   clearCart: () => Promise<void>;
   fetchCart: () => Promise<void>;
   syncCart: () => Promise<void>;
+  setItems: (items: CartItem[]) => void;
+  setUserId: (userId: string | null) => void;
 }
 
 export const useCartStore = create<CartStore>()(
@@ -29,17 +32,39 @@ export const useCartStore = create<CartStore>()(
       total: 0,
       isLoading: false,
       error: null,
+      userId: null,
+
+      setUserId: (userId) => {
+        set({ userId });
+        if (!userId) {
+          // Clear cart when user logs out
+          set({ items: [], total: 0 });
+        }
+      },
+
+      setItems: (items) => {
+        set({
+          items,
+          total: calculateTotal(items),
+        });
+      },
 
       fetchCart: async () => {
         try {
+          const userId = get().userId;
+          if (!userId) return;
+
           set({ isLoading: true, error: null });
           const response = await fetch('/api/cart');
           if (!response.ok) throw new Error('Failed to fetch cart');
           const data = await response.json();
-          set({
-            items: data.items || [],
-            total: calculateTotal(data.items || []),
-          });
+          
+          if (data.items) {
+            set({
+              items: data.items,
+              total: calculateTotal(data.items),
+            });
+          }
         } catch (error) {
           console.error('Error fetching cart:', error);
           set({ error: 'Failed to fetch cart' });
@@ -50,6 +75,9 @@ export const useCartStore = create<CartStore>()(
 
       syncCart: async () => {
         try {
+          const userId = get().userId;
+          if (!userId) return;
+
           set({ isLoading: true, error: null });
           const response = await fetch('/api/cart', {
             method: 'POST',
@@ -57,6 +85,14 @@ export const useCartStore = create<CartStore>()(
             body: JSON.stringify({ items: get().items }),
           });
           if (!response.ok) throw new Error('Failed to sync cart');
+          
+          const data = await response.json();
+          if (data.items) {
+            set({
+              items: data.items,
+              total: calculateTotal(data.items),
+            });
+          }
         } catch (error) {
           console.error('Error syncing cart:', error);
           set({ error: 'Failed to sync cart' });
@@ -87,7 +123,10 @@ export const useCartStore = create<CartStore>()(
             total: calculateTotal(newItems),
           });
 
-          await get().syncCart();
+          const userId = get().userId;
+          if (userId) {
+            await get().syncCart();
+          }
         } catch (error) {
           console.error('Error adding item:', error);
           set({ error: 'Failed to add item' });
@@ -105,7 +144,10 @@ export const useCartStore = create<CartStore>()(
             total: calculateTotal(newItems),
           });
 
-          await get().syncCart();
+          const userId = get().userId;
+          if (userId) {
+            await get().syncCart();
+          }
         } catch (error) {
           console.error('Error removing item:', error);
           set({ error: 'Failed to remove item' });
@@ -130,7 +172,10 @@ export const useCartStore = create<CartStore>()(
             total: calculateTotal(newItems),
           });
 
-          await get().syncCart();
+          const userId = get().userId;
+          if (userId) {
+            await get().syncCart();
+          }
         } catch (error) {
           console.error('Error updating quantity:', error);
           set({ error: 'Failed to update quantity' });
@@ -142,7 +187,10 @@ export const useCartStore = create<CartStore>()(
       clearCart: async () => {
         try {
           set({ isLoading: true, error: null });
-          await fetch('/api/cart', { method: 'DELETE' });
+          const userId = get().userId;
+          if (userId) {
+            await fetch('/api/cart', { method: 'DELETE' });
+          }
           set({ items: [], total: 0 });
         } catch (error) {
           console.error('Error clearing cart:', error);

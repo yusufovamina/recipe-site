@@ -31,7 +31,6 @@ export default function SignInPage() {
         redirect: false,
         email,
         password,
-        callbackUrl: `/${locale}/home`,
       });
 
       if (!result) {
@@ -48,8 +47,7 @@ export default function SignInPage() {
         return;
       }
 
-      // Successful login
-      router.push(`/${locale}/home`);
+      router.push(`/home`);
     } catch (error) {
       console.error("Client-side error:", error);
       setError(t("unexpectedError"));
@@ -79,7 +77,7 @@ export default function SignInPage() {
 
     try {
       await signIn("github", {
-        callbackUrl: `/${locale}/home`,
+        callbackUrl: `/home`,
       });
     } catch (error) {
       console.error("GitHub sign-in error:", error);
@@ -90,7 +88,7 @@ export default function SignInPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-100 via-gray-200 to-gray-300 dark:from-gray-900 dark:via-gray-800 dark:to-gray-950">
-      <div className="relative w-full max-w-md p-8 backdrop-blur-md bg-white/30 dark:bg-gray-800/30 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-2xl transform transition-all duration-300 hover:shadow-lg">
+      <div className="w-full max-w-md p-8 space-y-8 bg-white dark:bg-gray-800 rounded-2xl shadow-xl relative overflow-hidden">
         <div className="absolute -top-4 -left-4 w-16 h-16 bg-orange-500/20 rounded-full blur-md"></div>
         <div className="relative z-10">
           <div className="flex justify-end mb-6">
@@ -140,8 +138,18 @@ export default function SignInPage() {
               disabled={isLoading}
               className="w-full py-3 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-300 transform hover:scale-105 shadow-md disabled:opacity-50"
             >
-              {isLoading ? t("loggingIn") : t("loginButton")}
+              {isLoading ? t("signingIn") : t("signInButton")}
             </Button>
+
+            <div className="text-center text-sm text-gray-600 dark:text-gray-400">
+              {t("noAccount")}{" "}
+              <Link
+                href="/sign-up"
+                className="font-medium text-orange-600 hover:text-orange-500 dark:text-orange-400 dark:hover:text-orange-300"
+              >
+                {t("signUpLink")}
+              </Link>
+            </div>
           </form>
 
           <div className="mt-6 space-y-4">
@@ -185,16 +193,6 @@ export default function SignInPage() {
               {t("loginWithGithub")}
             </Button>
           </div>
-
-          <p className="mt-6 text-center text-sm text-gray-600 dark:text-gray-400">
-            {t("registerPrompt")}{" "}
-            <Link
-              href="/sign-up"
-              className="text-orange-500 hover:text-orange-600 font-medium transition-colors duration-300"
-            >
-              {t("registerLink")}
-            </Link>
-          </p>
         </div>
       </div>
     </div>

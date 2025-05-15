@@ -49,6 +49,7 @@ export async function POST(req: Request) {
     // Find or create cart
     let cart = await prisma.cart.findUnique({
       where: { userId: session.user.id },
+      include: { items: true },
     });
 
     if (!cart) {
@@ -59,22 +60,52 @@ export async function POST(req: Request) {
       });
     }
 
+    // Merge items: combine quantities for same products
+    const mergedItems = new Map();
+    
+    // First, add existing cart items
+    if (cart.items) {
+      cart.items.forEach(item => {
+        mergedItems.set(item.recipeId, {
+          ...item,
+          quantity: item.quantity
+        });
+      });
+    }
+
+    // Then, merge with new items
+    if (items && items.length > 0) {
+      items.forEach((item: any) => {
+        const existing = mergedItems.get(item.id);
+        if (existing) {
+          // Update quantity if item exists
+          mergedItems.set(item.id, {
+            ...existing,
+            quantity: existing.quantity + item.quantity
+          });
+        } else {
+          // Add new item
+          mergedItems.set(item.id, {
+            cartId: cart.id,
+            recipeId: item.id,
+            name: item.name,
+            image: item.image,
+            quantity: item.quantity,
+            price: item.price,
+          });
+        }
+      });
+    }
+
     // Delete existing items
     await prisma.cartItem.deleteMany({
       where: { cartId: cart.id },
     });
 
-    // Create new items
-    if (items && items.length > 0) {
+    // Create merged items
+    if (mergedItems.size > 0) {
       await prisma.cartItem.createMany({
-        data: items.map((item: any) => ({
-          cartId: cart.id,
-          recipeId: item.id,
-          name: item.name,
-          image: item.image,
-          quantity: item.quantity,
-          price: item.price,
-        })),
+        data: Array.from(mergedItems.values()),
       });
     }
 

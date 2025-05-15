@@ -13,17 +13,36 @@ export default function Cart() {
   const t = useTranslations('Cart');
   const [isOpen, setIsOpen] = useState(false);
   const router = useRouter();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   
-  const { items, total, updateQuantity, removeItem, fetchCart, isLoading } = useCartStore();
+  const { 
+    items, 
+    total, 
+    updateQuantity, 
+    removeItem, 
+    fetchCart, 
+    setUserId,
+    isLoading 
+  } = useCartStore();
 
   useEffect(() => {
-    if (session?.user?.id) {
+    if (status === 'authenticated' && session?.user?.id) {
+      // Set user ID and fetch their cart when logged in
+      setUserId(session.user.id);
       fetchCart();
+    } else if (status === 'unauthenticated') {
+      // Clear user ID and cart when logged out
+      setUserId(null);
     }
-  }, [session]);
+  }, [session, status, setUserId, fetchCart]);
 
   const handleCheckout = () => {
+    if (!session) {
+      // If not logged in, redirect to login page
+      router.push('/login');
+      setIsOpen(false);
+      return;
+    }
     router.push('/checkout');
     setIsOpen(false);
   };
