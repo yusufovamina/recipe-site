@@ -56,27 +56,23 @@ export default function CheckoutPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!session?.user) {
-      router.push('/sign-in');
-      return;
-    }
-
-    if (!validateForm()) {
-      return;
-    }
-
     setSubmitting(true);
 
     try {
+      const validationErrors = validateForm();
+      if (Object.keys(validationErrors).length > 0) {
+        setErrors(validationErrors);
+        return;
+      }
+
       const payload = {
         items: items.map(item => ({
           recipeId: item.id,
+          name: item.name,
           quantity: item.quantity,
-          price: item.price,
-          name: item.name
+          price: item.price
         })),
-        totalAmount: total,
+        totalAmount: items.reduce((sum, item) => sum + item.price * item.quantity, 0),
         address: formData.deliveryMethod === 'pickup' ? 'Pickup' : formData.address,
         phoneNumber: formData.phoneNumber,
         paymentMethod: formData.paymentMethod,

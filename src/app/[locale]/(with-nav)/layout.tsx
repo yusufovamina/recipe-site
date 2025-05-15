@@ -242,7 +242,7 @@ export default function WithNavLayout({ children }: { children: React.ReactNode 
             </div>
           </nav>
         </header>
-        <main className="flex-grow container mx-auto px-4 py-6">{children}</main>
+        <main className="flex-grow  py-6">{children}</main>
         <footer className="bg-white dark:bg-gray-800 border-t">
           <div className="max-w-6xl mx-auto px-4 py-12">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-6">

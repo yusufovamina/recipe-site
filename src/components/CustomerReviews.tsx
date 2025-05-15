@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import { Star } from 'lucide-react';
 
 interface Review {
   id: number;
@@ -58,73 +59,95 @@ export default function CustomerReviews() {
   }, []);
 
   return (
-    <div className="bg-gray-50 dark:bg-gray-800 py-16">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white sm:text-4xl">
+    <section className="bg-gray-50 dark:bg-gray-800/50 py-16 relative overflow-hidden">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23000000' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+        }} />
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-gray-900 dark:text-white mb-4">
             What Our Customers Say
           </h2>
-          <p className="mt-4 text-xl text-gray-500 dark:text-gray-300">
+          <div className="w-24 h-1 bg-orange-500 mx-auto"></div>
+          <p className="mt-6 text-xl text-gray-600 dark:text-gray-300">
             Hear from our satisfied customers about their experience with us
           </p>
         </div>
 
-        <div className="mt-16">
-          <div className="relative">
-            <div className="relative h-80 overflow-hidden">
-              {reviews.map((review, idx) => (
-                <motion.div
-                  key={review.id}
-                  className={`absolute w-full transform ${idx === activeIndex ? 'opacity-100' : 'opacity-0'}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ 
-                    opacity: idx === activeIndex ? 1 : 0,
-                    y: idx === activeIndex ? 0 : 20
-                  }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <div className="text-center">
-                    <div className="relative">
-                      <img
-                        className="h-24 w-24 rounded-full mx-auto"
-                        src={review.avatar}
-                        alt={`${review.name}'s avatar`}
-                      />
-                      <span className="absolute bottom-0 right-0 inline-block">
-                        {[...Array(review.rating)].map((_, i) => (
-                          <span key={i} className="text-yellow-400">★</span>
-                        ))}
-                      </span>
+        <div className="relative max-w-4xl mx-auto">
+          <div className="relative h-[400px] overflow-hidden">
+            {reviews.map((review, idx) => (
+              <motion.div
+                key={review.id}
+                className={`absolute w-full transform ${
+                  idx === activeIndex ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+                }`}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ 
+                  opacity: idx === activeIndex ? 1 : 0,
+                  y: idx === activeIndex ? 0 : 20
+                }}
+                transition={{ duration: 0.5 }}
+              >
+                <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl p-8 mx-4">
+                  <div className="flex flex-col items-center">
+                    <div className="relative mb-6">
+                      <div className="w-24 h-24 rounded-full overflow-hidden ring-4 ring-orange-500 ring-offset-4 dark:ring-offset-gray-800">
+                        <img
+                          src={review.avatar}
+                          alt={`${review.name}'s avatar`}
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <div className="absolute -bottom-2 left-1/2 transform -translate-x-1/2 bg-orange-500 rounded-full px-3 py-1">
+                        <div className="flex items-center space-x-1">
+                          {[...Array(review.rating)].map((_, i) => (
+                            <Star key={i} className="w-4 h-4 text-white fill-white" />
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div className="mt-6">
-                      <p className="text-xl font-medium text-gray-900 dark:text-white">
-                        {review.name}
-                      </p>
-                      <p className="mt-3 text-base text-gray-500 dark:text-gray-300 max-w-2xl mx-auto">
+                    
+                    <blockquote className="text-center">
+                      <p className="text-xl italic text-gray-700 dark:text-gray-300 mb-4">
                         "{review.comment}"
                       </p>
-                    </div>
+                      <footer>
+                        <div className="font-medium text-lg text-gray-900 dark:text-white">
+                          {review.name}
+                        </div>
+                        <div className="text-orange-500 font-medium mt-1">
+                          {review.type.charAt(0).toUpperCase() + review.type.slice(1)} Review
+                        </div>
+                      </footer>
+                    </blockquote>
                   </div>
-                </motion.div>
-              ))}
-            </div>
+                </div>
+              </motion.div>
+            ))}
+          </div>
 
-            <div className="mt-8 flex justify-center space-x-3">
-              {reviews.map((_, idx) => (
-                <button
-                  key={idx}
-                  className={`h-3 w-3 rounded-full ${
-                    idx === activeIndex
-                      ? 'bg-orange-500'
-                      : 'bg-gray-300 dark:bg-gray-600'
-                  }`}
-                  onClick={() => setActiveIndex(idx)}
-                />
-              ))}
-            </div>
+          {/* Navigation Dots */}
+          <div className="flex justify-center items-center space-x-3 mt-8">
+            {reviews.map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setActiveIndex(idx)}
+                className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                  idx === activeIndex
+                    ? 'bg-orange-500 w-8'
+                    : 'bg-gray-300 dark:bg-gray-600 hover:bg-orange-300 dark:hover:bg-orange-700'
+                }`}
+                aria-label={`Go to review ${idx + 1}`}
+              />
+            ))}
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 } 
